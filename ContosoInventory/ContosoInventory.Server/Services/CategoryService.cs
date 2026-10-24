@@ -152,12 +152,22 @@ public class CategoryService : ICategoryService
                 return false;
             }
 
+            if (await _context.Products.AnyAsync(product => product.CategoryId == id))
+            {
+                throw new InvalidOperationException(
+                    $"Category '{category.Name}' cannot be deleted because it contains products.");
+            }
+
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
 
             _logger.LogInformation("Category deleted: {CategoryName} (ID: {CategoryId}).", category.Name, category.Id);
 
             return true;
+        }
+        catch (InvalidOperationException)
+        {
+            throw;
         }
         catch (Exception ex)
         {

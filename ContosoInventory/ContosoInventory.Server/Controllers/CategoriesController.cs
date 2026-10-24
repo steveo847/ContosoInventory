@@ -121,17 +121,25 @@ public class CategoriesController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> DeleteCategory([FromRoute] int id)
     {
         _logger.LogInformation("Deleting category with ID {CategoryId}.", id);
-        var deleted = await _categoryService.DeleteCategoryAsync(id);
 
-        if (!deleted)
+        try
         {
-            return NotFound();
-        }
+            var deleted = await _categoryService.DeleteCategoryAsync(id);
+            if (!deleted)
+            {
+                return NotFound();
+            }
 
-        return NoContent();
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Conflict(new { message = ex.Message });
+        }
     }
 
     /// <summary>
