@@ -44,6 +44,7 @@ On the first run, the application automatically creates the SQLite database, app
 
 - **Admin** users can create, edit, delete, and toggle categories.
 - **Viewer** users have read-only access.
+- **Admin** users can create, update, delete, and restock products; all authenticated users can read products.
 
 ## Project Structure
 
@@ -61,6 +62,8 @@ ContosoInventory/
 ## API Documentation
 
 When the application is running, Swagger UI is available at: `http://localhost:5240/swagger`
+
+The product API is available at `/api/products`. It supports listing (optionally filtered with `categoryId`), reading by ID, creating, updating, deleting, and restocking products. Product SKUs are unique without regard to letter casing, and categories containing products cannot be deleted.
 
 ## License
 
